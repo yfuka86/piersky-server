@@ -1,0 +1,23 @@
+namespace :deploy do
+  desc "Install everything onto the server"
+  task :install do
+    on roles(:web) do
+      execute :sudo, "apt-get -y update"
+      execute :sudo, "apt-get -y upgrade --show-upgraded"
+      execute :sudo, "apt-get -y install libxslt-dev libxml2-dev"
+      execute :sudo, "apt-get -y install libdjvulibre-dev libjpeg-dev libtiff-dev libwmf-dev libmagickcore-dev libmagickwand-dev libmagick++-dev"
+      execute :sudo, "apt-get -y install imagemagick"
+      execute :sudo, "apt-get -y install libcurl4-openssl-dev libffi-dev"
+      execute :sudo, "apt-get -y install libav-tools"
+    end
+  end
+
+  desc "Install libav-tools to convert video"
+  task :install_avconv do
+    on roles(:web) do
+      execute :sudo, "apt-get -y update"
+      execute :sudo, "apt-get -y upgrade --show-upgraded"
+      execute :sudo, "apt-get -y install libav-tools"
+    end
+  end
+end
