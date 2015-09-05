@@ -11,11 +11,4 @@ namespace :unicorn do
     end
   end
   after "deploy:setup_config", "unicorn:setup"
-
-  desc "Update Unicorn configuration"
-  task :update do
-    on roles(:app) do
-      template "unicorn.rb.erb", "#{shared_path}/config/unicorn.rb"
-    end
-  end
 end

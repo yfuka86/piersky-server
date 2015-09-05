@@ -5,13 +5,17 @@ set :repo_url, 'git@github.com:yfuka86/piersky.git'
 set :user, "deploy"
 set :deploy_to, "/home/#{fetch(:user)}/apps/#{fetch(:application)}"
 
+set :slack_webhook, "https://hooks.slack.com/services/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"
+
 set :ssh_options, {
   keys: [File.expand_path('~/.ssh/piersky/id_rsa')],
   forward_agent: true,
-  port: 7213
+  port: 7231
 }
 
 set :linked_files, %w{config/database.yml}
+
+set :bundle_env_variables, { nokogiri_use_system_libraries: 1 }
 
 namespace :deploy do
   desc "Start unicorn"
@@ -31,5 +35,21 @@ namespace :deploy do
     on roles(:web), in: :groups, limit: 3, wait: 6 do
       execute "service unicorn_#{fetch(:application)} restart"
     end
+  end
+end
+
+%w[start stop restart].each do |command|
+  desc "#{command} nginx"
+  task command do
+    on roles(:app) do
+      execute :sudo, "service nginx #{command}"
+    end
+  end
+end
+
+desc "Update Unicorn configuration"
+task :update do
+  on roles(:app) do
+    template "unicorn.rb.erb", "#{shared_path}/config/unicorn.rb"
   end
 end

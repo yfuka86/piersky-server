@@ -4,11 +4,10 @@ stderr_path "<%= shared_path %>/log/unicorn.log"
 stdout_path "<%= shared_path %>/log/unicorn.log"
 
 listen "/tmp/unicorn.<%= fetch(:application) %>.sock"
-worker_processes 6
+worker_processes 2
 timeout 20
 
 before_fork do |server, worker|
-  # other settings
   if defined?(ActiveRecord::Base)
     ActiveRecord::Base.connection.disconnect!
     sleep 0.1
@@ -16,7 +15,6 @@ before_fork do |server, worker|
 end
 
 after_fork do |server, worker|
-  # other settings
   if defined?(ActiveRecord::Base)
     ActiveRecord::Base.establish_connection
   end

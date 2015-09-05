@@ -11,13 +11,4 @@ namespace :deploy do
       execute :sudo, "apt-get -y install libav-tools"
     end
   end
-
-  desc "Install libav-tools to convert video"
-  task :install_avconv do
-    on roles(:web) do
-      execute :sudo, "apt-get -y update"
-      execute :sudo, "apt-get -y upgrade --show-upgraded"
-      execute :sudo, "apt-get -y install libav-tools"
-    end
-  end
 end
