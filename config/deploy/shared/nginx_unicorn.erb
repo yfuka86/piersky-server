@@ -4,7 +4,7 @@ upstream unicorn {
 
 server {
   listen 80;
-  server_name masturbate.io;
+  server_name www.piersky.com;
   root <%= current_path %>/public;
 
   if (-f $document_root/system/maintenance.html) {
@@ -39,5 +39,5 @@ server {
 server {
   listen 80 default_server;
   server_name  _;
-  return 301 http://masturbate.io$request_uri;
+  return 301 http://www.piersky.com$request_uri;
 }
