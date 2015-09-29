@@ -1,4 +1,3 @@
-=begin
 namespace :redis do
   desc "Install latest stable release of nginx"
   task :install do
@@ -11,11 +10,10 @@ namespace :redis do
 
   %w[start stop restart].each do |command|
     desc "#{command} redis-server"
-    task command do 
+    task command do
       on roles(:app) do
         execute :sudo, "service redis-server #{command}"
       end
     end
   end
 end
-=end

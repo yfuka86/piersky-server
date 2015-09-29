@@ -17,6 +17,9 @@ set :linked_files, %w{config/database.yml}
 
 set :bundle_env_variables, { nokogiri_use_system_libraries: 1 }
 
+set :sidekiq_role, :sidekiq
+set :sidekiq_config, "#{current_path}/config/sidekiq.yml"
+
 namespace :deploy do
   desc "Start unicorn"
   task :start do
