@@ -77,13 +77,21 @@ namespace :cassandra do
   desc "Setup Cassandra"
   task :create do
     on roles(:app) do
-      execute "RAILS_ENV=production bundle exec rake cequel:keyspace:create"
+      within current_path do
+        with rails_env: fetch(:rails_env) do
+          execute :rake, "cequel:keyspace:create"
+        end
+      end
     end
   end
 
   task :setup do
     on roles(:app) do
-      execute "RAILS_ENV=production bundle exec rake cequel:migrate"
+      within current_path do
+        with rails_env: fetch(:rails_env) do
+          execute :rake, "cequel:migrate"
+        end
+      end
     end
   end
 end
