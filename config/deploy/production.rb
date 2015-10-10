@@ -5,7 +5,7 @@ set :rails_env, :production
 set :db_host, 'localhost'
 
 set :bundle_binstubs, nil
-set :linked_dirs, %w{log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system public/shared}
+set :linked_dirs, %w{log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system public/shared node_modules}
 
 set :sidekiq_processes, 1
 

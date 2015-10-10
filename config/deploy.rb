@@ -39,6 +39,13 @@ namespace :deploy do
       execute "service unicorn_#{fetch(:application)} restart"
     end
   end
+
+  desc "Update Unicorn configuration"
+  task :update do
+    on roles(:app) do
+      template "unicorn.rb.erb", "#{shared_path}/config/unicorn.rb"
+    end
+  end
 end
 
 %w[start stop restart].each do |command|
@@ -50,10 +57,19 @@ end
   end
 end
 
-desc "Update Unicorn configuration"
-task :update do
-  on roles(:app) do
-    template "unicorn.rb.erb", "#{shared_path}/config/unicorn.rb"
+namespace :node do
+  desc "Run npm install"
+  task :install do
+    on roles(:web) do
+      execute "cd #{release_path}; npm install"
+    end
+  end
+
+  desc "Compile js"
+  task :compile do
+    on roles(:web) do
+      execute %Q|cd #{release_path}; browserify app/assets/javascripts/src/application.js -t babelify --extension=".js.jsx" -o app/assets/javascripts/dist/application.js|
+    end
   end
 end
 
