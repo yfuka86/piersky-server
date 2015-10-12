@@ -1,15 +1,3 @@
-upstream backend {
-  server 45.79.81.58:80;
-}
-
-server {
-  listen 80;
-  server_name 45.79.159.102;
-  location / {
-    proxy_pass http://backend;
-  }
-}
-
 upstream unicorn {
   server unix:/tmp/unicorn.<%= fetch(:application) %>.sock fail_timeout=0;
 }
@@ -49,7 +37,7 @@ server {
 }
 
 server {
-  listen 80;
+  listen 80 default_server;
   server_name  _;
   return 301 http://www.piersky.com$request_uri;
 }
