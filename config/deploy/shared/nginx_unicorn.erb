@@ -4,7 +4,7 @@ upstream unicorn {
 
 server {
   listen 80;
-  server_name www.piersky.com;
+  server_name .piersky.com;
   root <%= current_path %>/public;
 
   if (-f $document_root/system/maintenance.html) {
@@ -37,7 +37,7 @@ server {
 }
 
 server {
-  listen 80 default_server;
+  listen 80;
   server_name  _;
-  return 301 http://www.pppppppppppppiersky.com$request_uri;
+  return 301 http://www.piersky.com$request_uri;
 }
