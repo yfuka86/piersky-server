@@ -4,7 +4,7 @@ upstream unicorn {
 
 server {
   listen 80;
-  server_name .piersky.com;
+  server_name localhost;
   root <%= current_path %>/public;
 
   if (-f $document_root/system/maintenance.html) {
@@ -34,10 +34,4 @@ server {
   error_page 500 502 503 504 /500.html;
   client_max_body_size 4G;
   keepalive_timeout 10;
-}
-
-server {
-  listen 80 default_server;
-  server_name  _;
-  return 301 http://www.piersky.com$request_uri;
 }
