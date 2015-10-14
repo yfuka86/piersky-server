@@ -4,8 +4,11 @@ upstream unicorn {
 
 server {
   listen 80;
-  server_name localhost;
+  server_name .piersky.com;
   root <%= current_path %>/public;
+
+  allow 45.118.132.157;
+  deny all;
 
   if (-f $document_root/system/maintenance.html) {
     return 503;

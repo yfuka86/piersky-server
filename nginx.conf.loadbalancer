@@ -25,10 +25,13 @@ http {
   server {
     listen               443 ssl;
     server_name          .piersky.com;
-    ssl_certificate      /etc/nginx/ssl/a92111e79656f4fa.crt;
+    ssl_certificate      /etc/nginx/ssl/www.piersky.com.crt;
     ssl_certificate_key  /etc/nginx/ssl/www.piersky.com.key;
-    ssl_protocols        SSLv3 TLSv1;
-    ssl_ciphers          HIGH:!ADH:!MD5;
+    ssl_protocols        TLSv1 TLSv1.1 TLSv1.2;
+    ssl_ciphers          'EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH';
+    ssl_session_cache    shared:SSL:1m;
+    ssl_session_timeout  5m;
+    ssl_prefer_server_ciphers  on;
     location / {
       proxy_pass http://backend;
     }
