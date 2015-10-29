@@ -15,10 +15,10 @@ lock '3.4.0'
 #   deploy:updated
 #     [before]
 #       deploy:bundle (bundle install)
-#     [after]
 #       deploy:migrate (rake db:migrate)
 #       deploy:compile_assets (rake assets:precompile)
 #       deploy:normalize_assets
+#     [after]
 #   deploy:publishing
 #     deploy:symlink:release
 #   deploy:published
@@ -79,9 +79,6 @@ namespace :deploy do
       template "unicorn.rb.erb", "#{shared_path}/config/unicorn.rb"
     end
   end
-
-  after :publishing, :restart
-  before :updated, :gulp
 end
 
 %w[start stop restart].each do |command|
@@ -97,9 +94,10 @@ namespace :node do
   desc "Run npm install"
   task :install do
     on roles(:web) do
-      execute "cd #{release_path}"
-      execute :sudo, "npm cache clean"
-      execute :sudo, "npm install --production --no-spin"
+      within release_path do
+        execute :sudo, "npm cache clean"
+        execute :sudo, "npm install --production --no-spin"
+      end
     end
   end
 
@@ -108,10 +106,11 @@ namespace :node do
       execute :sudo, "npm update -g npm"
     end
   end
-
-  before "deploy:updated", "node:install"
 end
 
+before "deploy:updated", "node:install"
+before "deploy:updated", :gulp
+after "deploy:publishing", "deploy:restart"
 
 # https://www.digitalocean.com/community/tutorials/how-to-install-cassandra-and-run-a-single-node-cluster-on-a-ubuntu-vps
 # namespace :cassandra do
