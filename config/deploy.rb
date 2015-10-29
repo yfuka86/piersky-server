@@ -1,5 +1,32 @@
 lock '3.4.0'
 
+# When you run cap production deploy, it runs these tasks:
+
+# deploy
+#   deploy:starting
+#     [before]
+#       deploy:ensure_stage
+#       deploy:set_shared_assets
+#     deploy:check
+#   deploy:started
+#   deploy:updating
+#     git:create_release
+#     deploy:symlink:shared
+#   deploy:updated
+#     [before]
+#       deploy:bundle (bundle install)
+#     [after]
+#       deploy:migrate (rake db:migrate)
+#       deploy:compile_assets (rake assets:precompile)
+#       deploy:normalize_assets
+#   deploy:publishing
+#     deploy:symlink:release
+#   deploy:published
+#   deploy:finishing
+#     deploy:cleanup
+#   deploy:finished
+#     deploy:log_revision
+
 set :application, 'piersky'
 set :repo_url, 'git@github.com:yfuka86/piersky.git'
 set :user, "deploy"
@@ -20,7 +47,13 @@ set :bundle_env_variables, { nokogiri_use_system_libraries: 1 }
 set :sidekiq_role, :sidekiq
 set :sidekiq_config, "#{current_path}/config/sidekiq.yml"
 
+set :npm_flags, '--production --no-spin'
+
+set :gulp_file, -> { release_path.join('gulpfile.js') }
+set :gulp_tasks, ['build-production']
+
 namespace :deploy do
+
   desc "Start unicorn"
   task :start do
     on roles(:app) do
@@ -46,6 +79,9 @@ namespace :deploy do
       template "unicorn.rb.erb", "#{shared_path}/config/unicorn.rb"
     end
   end
+
+  after :publishing, :restart
+  before :updated, :gulp
 end
 
 %w[start stop restart].each do |command|
@@ -61,53 +97,57 @@ namespace :node do
   desc "Run npm install"
   task :install do
     on roles(:web) do
-      execute "cd #{release_path}; npm install"
+      execute "cd #{release_path}"
+      execute :sudo, "npm cache clean"
+      execute :sudo, "npm install --production --no-spin"
     end
   end
 
-  desc "Compile js"
-  task :compile do
+  task :update do
     on roles(:web) do
-      execute %Q|cd #{release_path}; browserify app/assets/javascripts/src/application.js -t babelify --extension=".js.jsx" -o app/assets/javascripts/dist/application.js|
+      execute :sudo, "npm update -g npm"
     end
   end
+
+  before "deploy:updated", "node:install"
 end
+
 
 # https://www.digitalocean.com/community/tutorials/how-to-install-cassandra-and-run-a-single-node-cluster-on-a-ubuntu-vps
-namespace :cassandra do
-  desc "install java and Cassandra"
-  task :install do
-    on roles(:app) do
-    end
-  end
+# namespace :cassandra do
+#   desc "install java and Cassandra"
+#   task :install do
+#     on roles(:app) do
+#     end
+#   end
 
-  %w[start stop restart].each do |command|
-    desc "#{command} Cassandra"
-    task command do
-      on roles(:app) do
-        execute :sudo, "/home/deploy/cassandra/tools/bin/cassandra-stressd #{command}"
-      end
-    end
-  end
+#   %w[start stop restart].each do |command|
+#     desc "#{command} Cassandra"
+#     task command do
+#       on roles(:app) do
+#         execute :sudo, "/home/deploy/cassandra/tools/bin/cassandra-stressd #{command}"
+#       end
+#     end
+#   end
 
-  desc "Setup Cassandra"
-  task :create do
-    on roles(:app) do
-      within current_path do
-        with rails_env: fetch(:rails_env) do
-          execute :rake, "cequel:keyspace:create"
-        end
-      end
-    end
-  end
+#   desc "Setup Cassandra"
+#   task :create do
+#     on roles(:app) do
+#       within current_path do
+#         with rails_env: fetch(:rails_env) do
+#           execute :rake, "cequel:keyspace:create"
+#         end
+#       end
+#     end
+#   end
 
-  task :setup do
-    on roles(:app) do
-      within current_path do
-        with rails_env: fetch(:rails_env) do
-          execute :rake, "cequel:migrate"
-        end
-      end
-    end
-  end
-end
+#   task :setup do
+#     on roles(:app) do
+#       within current_path do
+#         with rails_env: fetch(:rails_env) do
+#           execute :rake, "cequel:migrate"
+#         end
+#       end
+#     end
+#   end
+# end
