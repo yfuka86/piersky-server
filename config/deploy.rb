@@ -47,8 +47,6 @@ set :bundle_env_variables, { nokogiri_use_system_libraries: 1 }
 set :sidekiq_role, :sidekiq
 set :sidekiq_config, "#{current_path}/config/sidekiq.yml"
 
-set :npm_flags, '--production --no-spin'
-
 set :gulp_file, -> { release_path.join('gulpfile.js') }
 set :gulp_tasks, ['build-production']
 
