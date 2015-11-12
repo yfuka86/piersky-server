@@ -50,8 +50,9 @@ set :sidekiq_config, "#{current_path}/config/sidekiq.yml"
 set :gulp_file, -> { release_path.join('gulpfile.js') }
 set :gulp_tasks, ['build-production']
 
-set :cron_role, :localhost
-set :whenever_command, "bundle exec whenever"
+set :whenever_environment, :production
+set :whenever_command, "RAILS_ENV=#{fetch(:whenever_environment)} bundle exec whenever --update-crontab"
+set :whenever_identifier, ->{ "#{fetch(:application)}_#{fetch(:stage)}" }
 require "whenever/capistrano"
 
 namespace :deploy do
