@@ -50,6 +50,8 @@ set :sidekiq_config, "#{current_path}/config/sidekiq.yml"
 set :gulp_file, -> { release_path.join('gulpfile.js') }
 set :gulp_tasks, ['build-production']
 
+set :whenever_command, "bundle exec whenever"
+
 namespace :deploy do
 
   desc "Start unicorn"
