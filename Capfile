@@ -6,7 +6,6 @@ require 'capistrano/sidekiq'
 require 'capistrano/gulp'
 require 'capistrano/rails/assets'
 require 'capistrano/rails/migrations'
-require "whenever/capistrano"
 require 'slackistrano'
 
 

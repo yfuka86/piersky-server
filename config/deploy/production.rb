@@ -9,6 +9,4 @@ set :linked_dirs, %w{log tmp/pids tmp/cache tmp/sockets vendor/bundle public/sys
 
 set :sidekiq_processes, 1
 
-set :whenever_environment, :production
-
 server '45.79.81.58', user: fetch(:user), roles: %w{web app db sidekiq}, primary: true
