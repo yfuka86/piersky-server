@@ -51,9 +51,8 @@ set :gulp_file, -> { release_path.join('gulpfile.js') }
 set :gulp_tasks, ['build-production']
 
 set :whenever_environment, :production
-set :whenever_command, "RAILS_ENV=#{fetch(:whenever_environment)} bundle exec whenever --update-crontab"
-set :whenever_identifier, ->{ "#{fetch(:application)}_#{fetch(:stage)}" }
-require "whenever/capistrano"
+set :whenever_command, "cd #{current_path}; RAILS_ENV=#{fetch(:whenever_environment)} bundle exec whenever --update-crontab"
+set :whenever_roles, -> { :cron }
 
 namespace :deploy do
 
