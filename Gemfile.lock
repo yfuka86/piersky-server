@@ -58,16 +58,22 @@ GEM
       rspec-logsplit (>= 0.1.2)
       timers (>= 4.1.1)
     chronic (0.10.2)
+    coderay (1.1.0)
     colorize (0.7.7)
     connection_pool (2.2.0)
     dotenv (2.0.2)
     hitimes (1.2.3)
     i18n (0.7.0)
     json (1.8.3)
+    method_source (0.8.2)
     nenv (0.2.0)
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
     net-ssh (2.9.2)
+    pry (0.10.3)
+      coderay (~> 1.1.0)
+      method_source (~> 0.8.1)
+      slop (~> 3.4)
     rake (10.4.2)
     redis (3.2.1)
     redis-namespace (1.5.2)
@@ -82,6 +88,7 @@ GEM
     slackistrano (0.1.10)
       capistrano (>= 3.0.1)
       json
+    slop (3.6.0)
     sshkit (1.7.1)
       colorize (>= 0.7.0)
       net-scp (>= 1.1.2)
@@ -100,6 +107,7 @@ DEPENDENCIES
   capistrano-gulp
   capistrano-rails
   capistrano-sidekiq
+  pry
   slackistrano
   whenever
 

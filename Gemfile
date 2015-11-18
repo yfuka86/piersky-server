@@ -6,3 +6,4 @@ gem 'capistrano-sidekiq'
 gem 'capistrano-gulp'
 gem 'whenever', :require => false
 gem 'slackistrano'
+gem 'pry'
