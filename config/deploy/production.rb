@@ -9,6 +9,6 @@ set :linked_dirs, %w{log tmp/pids tmp/cache tmp/sockets vendor/bundle public/sys
 
 set :sidekiq_processes, 1
 
-server '45.79.81.58', user: fetch(:user), roles: %w{app web}, primary: true
-server '45.79.109.107', user: fetch(:user), roles: %w{app web cron worker}
+server '45.79.81.58', user: fetch(:user), roles: %w{app web db}, primary: true
+server '45.79.109.107', user: fetch(:user), roles: %w{app web db cron worker}
 # redis-server '192.155.83.40'
