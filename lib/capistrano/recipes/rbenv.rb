@@ -5,7 +5,6 @@ namespace :rbenv do
   desc "Install rbenv, Ruby, and the Bundler gem"
   task :install do
     on roles(:app) do
-      execute :sudo, "apt-get -y install curl git-core"
       execute "curl -L https://raw.github.com/fesplugas/rbenv-installer/master/bin/rbenv-installer | bash"
       bashrc = <<-BASHRC
 export RBENV_ROOT="${HOME}/.rbenv"

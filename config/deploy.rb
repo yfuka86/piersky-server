@@ -44,11 +44,12 @@ set :linked_files, %w{config/database.yml}
 
 set :bundle_env_variables, { nokogiri_use_system_libraries: 1 }
 
-set :sidekiq_role, :sidekiq
+set :sidekiq_role, :worker
 set :sidekiq_config, "#{current_path}/config/sidekiq.yml"
 
 set :gulp_file, -> { release_path.join('gulpfile.js') }
 set :gulp_tasks, ['build-production']
+set :gulp_roles, -> { :app }
 
 set :whenever_environment, :production
 set :whenever_command, -> { "cd #{release_path}; crontab -r; RAILS_ENV=#{fetch(:whenever_environment)} bundle exec whenever --update-crontab" }
@@ -70,7 +71,7 @@ namespace :deploy do
   end
   desc "Restart application"
   task :restart do
-    on roles(:web), in: :groups, limit: 3, wait: 6 do
+    on roles(:app), in: :groups, limit: 3, wait: 6 do
       execute "service unicorn_#{fetch(:application)} restart"
     end
   end
@@ -86,7 +87,7 @@ end
 %w[start stop restart].each do |command|
   desc "#{command} nginx"
   task command do
-    on roles(:app) do
+    on roles(:web) do
       execute :sudo, "service nginx #{command}"
     end
   end
@@ -95,17 +96,12 @@ end
 namespace :node do
   desc "Run npm install"
   task :install do
-    on roles(:web) do
+    on roles(:app) do
       within release_path do
+        execute :sudo, "npm update -g npm"
         execute :sudo, "npm cache clean"
         execute :sudo, "npm install --production --no-spin"
       end
-    end
-  end
-
-  task :update do
-    on roles(:web) do
-      execute :sudo, "npm update -g npm"
     end
   end
 end

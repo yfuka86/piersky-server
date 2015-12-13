@@ -1,17 +1,18 @@
 namespace :deploy do
   desc "Install everything onto the server"
   task :install do
-    on roles(:web) do
+    on roles(:app) do
       execute :sudo, "apt-get -y update"
       execute :sudo, "apt-get -y upgrade --show-upgraded"
       execute :sudo, "apt-get -y install g++ flex bison gperf ruby perl python"
-      execute :sudo, "apt-get -y install libsqlite3-dev libfontconfig1-dev libicu-dev libfreetype6 libssl-dev"
+      execute :sudo, "apt-get -y install libsqlite3-dev libpq-dev libfontconfig1-dev libicu-dev libfreetype6 libssl-dev"
       execute :sudo, "apt-get -y install libpng-dev libjpeg-dev libx11-dev libxext-dev"
       execute :sudo, "apt-get -y install libxslt-dev libxml2-dev"
       execute :sudo, "apt-get -y install libdjvulibre-dev libtiff-dev libwmf-dev libmagickcore-dev libmagickwand-dev libmagick++-dev"
       execute :sudo, "apt-get -y install imagemagick"
       execute :sudo, "apt-get -y install libcurl4-openssl-dev libffi-dev"
       execute :sudo, "apt-get -y install libav-tools"
+      execute :sudo, "apt-get -y install curl git-core"
     end
   end
 end
